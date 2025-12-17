@@ -1,58 +1,47 @@
-🏨 Hotel Analytics Dashboard: End-to-End Data Engineering
-📖 Project Background
-The hotel management faced significant challenges with raw, inconsistent booking data. The lack of a centralized source of truth prevented leadership from understanding monthly revenue cycles, booking trends, and geographical performance. This project transforms fragmented data into actionable business intelligence.
+# 🏨 Hotel Analytics Dashboard: End-to-End Data Engineering
+[![Snowflake](https://img.shields.io/badge/Data_Warehouse-Snowflake-29B5E8?style=for-the-badge&logo=snowflake&logoColor=white)](https://www.snowflake.com/)
+[![SQL](https://img.shields.io/badge/Language-SQL-F80000?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)](#)
 
-🎯 Project Objectives
-The primary goal was to build a robust data pipeline in Snowflake to deliver:
+## 📖 Project Overview
+The objective of this project is to transform raw, inconsistent hotel booking data into a structured analytical environment. By leveraging **Snowflake**, I built a data pipeline that standardizes fragmented information to provide management with a clear view of monthly revenue trends and city-level performance.
 
-Data Integrity: Clean and standardized booking records.
+---
 
-Trend Analysis: Clear visibility into monthly revenue and booking volume.
+## 🎯 Business Objectives
+* **Data Standardization:** Clean and normalize raw datasets for accurate reporting.
+* **Trend Analysis:** Visualize monthly revenue and booking fluctuations.
+* **Geographic Insights:** Identify top revenue-generating cities to optimize marketing spend.
+* **Operational Metrics:** Analyze booking distribution by type and status (Cancellations vs. Completions).
+* **Executive KPIs:** Display high-level metrics like **Total Revenue** and **Total Bookings** at a glance.
 
-Geographic Insights: Identification of top-performing cities.
+---
 
-Operational Metrics: Analysis of booking types and cancellation statuses.
+## 🏗 Technical Architecture
+The project follows a modular data engineering workflow within the Snowflake ecosystem:
 
-Executive KPIs: High-level summaries of total revenue and throughput.
 
-🛠 Functional Requirements
-1. Data Cleaning & Engineering
-Validation: Fix date formatting and handle inconsistent data types.
 
-Deduplication: Remove redundant booking entries to ensure "Single Source of Truth."
+1.  **Ingestion:** Loading raw data into Snowflake stages.
+2.  **Transformation:** Using SQL to handle date formatting, deduplication, and missing values.
+3.  **Aggregation:** Creating summary tables for optimized dashboard performance.
+4.  **Visualization:** Connecting the Gold-layer tables to a dashboard for stakeholder review.
 
-Handling Nulls: Implement logic to address missing values in critical fields.
+---
 
-Aggregation: Transform granular daily transactions into monthly aggregates for performance optimization.
+## 🛠 Functional Requirements
 
-2. Analytical Visualizations
-The dashboard provides the following visual components:
+### 1. Data Cleaning & ETL
+* **Date Normalization:** Standardize inconsistent date formats across different sources.
+* **Data Integrity:** Remove duplicate entries and handle null values in critical fields.
+* **Aggregation Logic:** Transform transactional data into monthly snapshots for trend analysis.
 
-Growth Trends: Line charts for Revenue per Month and Bookings per Month.
+### 2. Dashboard & Visuals
+* **Revenue Metrics:** Line charts showing **Revenue per Month**.
+* **Volume Metrics:** Line charts tracking **Bookings per Month**.
+* **Market Share:** Bar charts highlighting **Top Cities by Revenue**.
+* **Status Analysis:** Breakdown of **Booking Types** and **Booking Status** (Success vs. Cancelled).
 
-Performance by Location: Horizontal bar charts identifying Top Cities by Revenue.
+---
 
-Category Analysis: Distribution of Booking Types (e.g., Direct vs. Agency).
-
-Operational Health: Breakdown of Booking Status (Confirmed, Cancelled, No-Show).
-
-3. Key Performance Indicators (KPIs)
-The top-level view exposes real-time metrics:
-
-Total Revenue | Total Bookings | Average Booking Value | Cancellation Rate
-
-🏗 Technical Architecture
-Ingestion: Raw CSV/JSON data loaded into Snowflake Internal Stages.
-
-Transformation: Multi-layered approach (Bronze/Silver/Gold) using Snowflake SQL.
-
-Modeling: Creating Views and Materialized Tables for reporting.
-
-Visualization: Data connected to [Insert Tool: e.g., Power BI, Tableau, or Snowsight].
-
-🚀 Future Enhancements
-[ ] Implement Automated Pipes (Snowpipe) for real-time data loading.
-
-[ ] Add Predictive Analytics to forecast next month's revenue.
-
-[ ] Integrate Sentiment Analysis from customer reviews.
+## 🚀 Key Results
+* **Unified Source of Truth:** Eliminated data silos

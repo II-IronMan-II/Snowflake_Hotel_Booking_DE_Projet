@@ -7,6 +7,7 @@ The objective of this project is to transform raw, inconsistent hotel booking da
 
 ### 📊 Final Dashboard
 ![Hotel Analytics Dashboard](dashboard.png)
+https://app.snowflake.com/tmnhqkx/ls18624/#/hotel_booking_analytics-dAIY1Lsv7
 
 ---
 

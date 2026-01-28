@@ -2,7 +2,7 @@
 
 A complete data engineering pipeline built on Snowflake implementing a **Medallion Architecture (Bronze-Silver-Gold)** for hotel booking data processing, transformation, and analytics.
 
-![Data Pipeline Architecture](architecture_diagram.png)
+![Data Pipeline Architecture](architecture_diagram.html)
 
 ## 📋 Project Overview
 

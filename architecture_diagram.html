@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking Data Pipeline Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .pipeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stage {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 3px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .stage:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stage.bronze {
+            border-color: #cd7f32;
+            background: linear-gradient(135deg, #fff5e6 0%, #ffffff 100%);
+        }
+
+        .stage.silver {
+            border-color: #c0c0c0;
+            background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%);
+        }
+
+        .stage.gold {
+            border-color: #ffd700;
+            background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+        }
+
+        .stage.source {
+            border-color: #4299e1;
+            background: linear-gradient(135deg, #ebf8ff 0%, #ffffff 100%);
+        }
+
+        .stage.dashboard {
+            border-color: #48bb78;
+            background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%);
+        }
+
+        .stage-header {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stage-icon {
+            font-size: 1.8em;
+        }
+
+        .stage-content {
+            color: #4a5568;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .stage-content strong {
+            color: #2d3748;
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .stage-content ul {
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+
+        .stage-content li {
+            margin: 5px 0;
+        }
+
+        .arrow {
+            font-size: 3em;
+            color: #cbd5e0;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .details-section {
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .detail-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .detail-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .detail-card ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .quality-checks {
+            margin-top: 50px;
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #4299e1;
+        }
+
+        .quality-checks h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .checks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .check-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .check-item h4 {
+            color: #4299e1;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .check-item p {
+            color: #4a5568;
+            line-height: 1.6;
+            font-size: 0.9em;
+        }
+
+        .gold-tables {
+            margin-top: 50px;
+        }
+
+        .gold-tables h2 {
+            color: #2d3748;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .table-card {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: #2d3748;
+        }
+
+        .table-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid rgba(45,55,72,0.2);
+            padding-bottom: 10px;
+        }
+
+        .table-card .use-case {
+            background: rgba(255,255,255,0.5);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .pipeline {
+                flex-direction: column;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏨 Hotel Booking Data Pipeline</h1>
+        <p class="subtitle">Medallion Architecture: Bronze → Silver → Gold</p>
+
+        <div class="pipeline">
+            <!-- Source Data -->
+            <div class="stage source">
+                <div class="stage-header">
+                    <span class="stage-icon">📁</span>
+                    CSV Data Source
+                </div>
+                <div class="stage-content">
+                    <strong>Raw Hotel Bookings</strong>
+                    <ul>
+                        <li>booking_id</li>
+                        <li>hotel_id & city</li>
+                        <li>customer_info</li>
+                        <li>dates & room_type</li>
+                        <li>amount & currency</li>
+                        <li>booking_status</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <!-- Stage -->
+            <div class="stage source">
+                <div class="stage-header">
+                    <span class="stage-icon">📦</span>
+                    Snowflake Stage
+                </div>
+                <div class="stage-content">
+                    <strong>STG_HOTEL_BOOKINGS</strong>
+                    <ul>
+                        <li>File Format: CSV</li>
+                        <li>Skip Header: Yes</li>
+                        <li>Null Handling: Configured</li>
+                        <li>Error: CONTINUE</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <!-- Bronze Layer -->
+            <div class="stage bronze">
+                <div class="stage-header">
+                    <span class="stage-icon">🥉</span>
+                    Bronze Layer
+                </div>
+                <div class="stage-content">
+                    <strong>BRONZE_HOTEL_BOOKING</strong>
+                    <ul>
+                        <li>All STRING columns</li>
+                        <li>No transformations</li>
+                        <li>Raw data copy</li>
+                        <li>Source of truth</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <!-- Silver Layer -->
+            <div class="stage silver">
+                <div class="stage-header">
+                    <span class="stage-icon">🥈</span>
+                    Silver Layer
+                </div>
+                <div class="stage-content">
+                    <strong>SILVER_HOTEL_BOOKINGS</strong>
+                    <ul>
+                        <li>Type casting applied</li>
+                        <li>Data validation</li>
+                        <li>Text standardization</li>
+                        <li>Quality filters</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <!-- Gold Layer -->
+            <div class="stage gold">
+                <div class="stage-header">
+                    <span class="stage-icon">🥇</span>
+                    Gold Layer
+                </div>
+                <div class="stage-content">
+                    <strong>3 Optimized Tables</strong>
+                    <ul>
+                        <li>Daily aggregations</li>
+                        <li>City-level metrics</li>
+                        <li>Clean records</li>
+                        <li>BI-ready data</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <!-- Dashboard -->
+            <div class="stage dashboard">
+                <div class="stage-header">
+                    <span class="stage-icon">📊</span>
+                    Analytics
+                </div>
+                <div class="stage-content">
+                    <strong>Dashboard Queries</strong>
+                    <ul>
+                        <li>KPIs (4 metrics)</li>
+                        <li>Line charts (2)</li>
+                        <li>Bar charts (3)</li>
+                        <li>Real-time insights</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quality Checks Section -->
+        <div class="quality-checks">
+            <h2>🔍 Data Quality Validation</h2>
+            <div class="checks-grid">
+                <div class="check-item">
+                    <h4>✉️ Email Validation</h4>
+                    <p>Pattern matching to ensure valid email format (contains @ and .)</p>
+                </div>
+                <div class="check-item">
+                    <h4>💰 Amount Validation</h4>
+                    <p>Converts negative amounts to absolute values using ABS() function</p>
+                </div>
+                <div class="check-item">
+                    <h4>📅 Date Logic Check</h4>
+                    <p>Ensures check-out date is after or equal to check-in date</p>
+                </div>
+                <div class="check-item">
+                    <h4>📝 Status Normalization</h4>
+                    <p>Standardizes variations like 'confirmeeed' and 'confirmd' to 'Confirmed'</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gold Tables Details -->
+        <div class="gold-tables">
+            <h2>🥇 Gold Layer Tables</h2>
+            <div class="tables-grid">
+                <div class="table-card">
+                    <h3>GOLD_AGG_DAILY_BOOKING</h3>
+                    <p><strong>Columns:</strong></p>
+                    <ul>
+                        <li>date (check_in_date)</li>
+                        <li>total_booking (COUNT)</li>
+                        <li>total_revenue (SUM)</li>
+                    </ul>
+                    <div class="use-case">
+                        💡 Use Case: Time-series analysis, trend forecasting, seasonality detection
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <h3>GOLD_AGG_HOTEL_CITY_SALES</h3>
+                    <p><strong>Columns:</strong></p>
+                    <ul>
+                        <li>hotel_city</li>
+                        <li>total_revenue (SUM)</li>
+                    </ul>
+                    <div class="use-case">
+                        💡 Use Case: Geographic analysis, market comparison, expansion planning
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <h3>GOLD_BOOKING_CLEAN</h3>
+                    <p><strong>Columns:</strong></p>
+                    <ul>
+                        <li>All booking fields</li>
+                        <li>Cleaned & validated</li>
+                        <li>Type-safe schema</li>
+                    </ul>
+                    <div class="use-case">
+                        💡 Use Case: Detailed reporting, customer segmentation, operational analytics
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transformation Details -->
+        <div class="details-section">
+            <div class="detail-card">
+                <h3>🔧 Silver Layer Transformations</h3>
+                <ul>
+                    <li><strong>INITCAP()</strong> - Capitalize names</li>
+                    <li><strong>TRIM()</strong> - Remove extra spaces</li>
+                    <li><strong>LOWER()</strong> - Lowercase emails</li>
+                    <li><strong>TRY_TO_DATE()</strong> - Safe date parsing</li>
+                    <li><strong>TRY_TO_NUMBER()</strong> - Safe numeric conversion</li>
+                    <li><strong>ABS()</strong> - Absolute values for amounts</li>
+                </ul>
+            </div>
+
+            <div class="detail-card">
+                <h3>📊 Dashboard KPIs</h3>
+                <ul>
+                    <li>Total Revenue</li>
+                    <li>Total Bookings</li>
+                    <li>Total Guests</li>
+                    <li>Average Booking Value</li>
+                    <li>Monthly Revenue Trends</li>
+                    <li>Top Cities Performance</li>
+                    <li>Status Distribution</li>
+                </ul>
+            </div>
+
+            <div class="detail-card">
+                <h3>🎯 Key Benefits</h3>
+                <ul>
+                    <li>Clear data lineage tracking</li>
+                    <li>Easy reprocessing capability</li>
+                    <li>Optimized query performance</li>
+                    <li>Data quality guarantee</li>
+                    <li>Scalable architecture</li>
+                    <li>Cost-effective analytics</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

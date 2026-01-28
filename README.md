@@ -6,6 +6,7 @@ A complete data engineering pipeline built on Snowflake implementing a **Medalli
 ![Gold Layer Details](gold_layer_details.png)
 
 ## 📋 Project Overview
+![Dashboard](dashboard.png)
 
 This project demonstrates a production-ready data engineering pipeline that processes hotel booking data through multiple layers of transformation, ensuring data quality and preparing it for business intelligence and analytics.
 
